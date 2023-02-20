@@ -18,7 +18,8 @@ type result struct {
 func GetBeer(c *gin.Context) {
 	
 	var result []result
-	limitParam := c.Param("limit")
+	nameParam := c.Query("name")
+    limitParam := c.Query("limit")
 	limit,err :=strconv.Atoi(limitParam)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,gin.H{
@@ -26,7 +27,10 @@ func GetBeer(c *gin.Context) {
 		})
 		return
 	}
-	nameParam := c.Param("name")
+	
+
+	
+
 	db.Db.Table("name_beers").Select("name_beers.name, name_beers.type, name_beers.picture, detail_beers.detail").
 	Joins("left join detail_beers on detail_beers.type = name_beers.type").
 	Where("name_beers.name = ?", nameParam).Limit(limit).Scan(&result)

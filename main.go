@@ -13,18 +13,12 @@ import (
 )
 
 func main() {
-
 	db.InitDB()
-
 	router := gin.Default()
-
-	router.GET("/beer/:name/:limit",getBeer.GetBeer)
+	router.GET("/beer",getBeer.GetBeer)
 	router.POST("/beer",postbeer.PostBeer)
-	router.POST("/beer_detail",postbeer.PostDetail)
 	router.PUT("/beer/:id",putbeer.UpdateBeer)
-	router.PUT("/beer_detail/:id",putbeer.UpdateDetail)
 	router.DELETE("/beer/:id",delbeer.DelBeer)
-	router.DELETE("/beer_detail/:id",delbeer.DelDetail)
 
 	router.Run()
 }

@@ -1,6 +1,7 @@
 package postbeer
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -9,16 +10,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type result struct {
+	Name  string
+	Type string
+	Picture	string
+	Detail string
+  }
+
 func PostBeer(c *gin.Context) {
+	var result result
 	var nameBeer db.NameBeer
 	
-	if err := c.ShouldBindJSON(&nameBeer); err != nil { 
+	if err := c.ShouldBindJSON(&result); err != nil { 
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	uploadImg(&nameBeer,c)
+	// uploadImg(&result,c)
+	nameBeer.Name = result.Name
+	nameBeer.Type = result.Type
+	nameBeer.Picture = result.Picture
+	fmt.Println(nameBeer)
 	insertName := db.Db.Create(&nameBeer)
 	if err := insertName.Error; err != nil { 
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -27,21 +40,12 @@ func PostBeer(c *gin.Context) {
 		return
 	}
 	
-	c.JSON(http.StatusCreated, gin.H{
-		"Status": "success",
-		
-	})
-}
-
-func PostDetail(c *gin.Context) {
 	var detailBeer db.DetailBeer
-	if err := c.ShouldBindJSON(&detailBeer); err != nil { 
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
+	detailBeer.Type = result.Type
+	detailBeer.Type = result.Detail
+
 	insertDetail := db.Db.Create(&detailBeer)
+
 	if err := insertDetail.Error; err != nil { 
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -54,7 +58,8 @@ func PostDetail(c *gin.Context) {
 	})
 }
 
-func uploadImg(data *db.NameBeer,c *gin.Context)  {
+
+func uploadImg(data *result,c *gin.Context)  {
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
