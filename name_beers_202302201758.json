@@ -1,0 +1,30 @@
+{
+"name_beers": [
+	{
+		"id" : 1,
+		"created_at" : null,
+		"updated_at" : null,
+		"deleted_at" : null,
+		"name" : "Heineken",
+		"type" : "Lager",
+		"picture" : "https:\/\/example.com\/heineken.jpg"
+	},
+	{
+		"id" : 2,
+		"created_at" : null,
+		"updated_at" : null,
+		"deleted_at" : null,
+		"name" : "Guinness",
+		"type" : "Stout",
+		"picture" : "https:\/\/example.com\/guinness.jpg"
+	},
+	{
+		"id" : 3,
+		"created_at" : null,
+		"updated_at" : null,
+		"deleted_at" : null,
+		"name" : "Corona Extra",
+		"type" : "Pale Lager",
+		"picture" : "https:\/\/example.com\/corona-extra.jpg"
+	}
+]}

@@ -1,0 +1,119 @@
+{
+	"info": {
+		"_postman_id": "3e6692c5-a986-44c2-a42b-ea4cc243e9d2",
+		"name": "API test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25944904"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/beer/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/beer/?name=Heineken&limit=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"beer",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Heineken"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/beer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"Name\": \"Heineken\",\r\n  \"Type\": \"Lager\",\r\n  \"Picture\": \"https://example.com/heineken.jpg\",\r\n  \"Detail\": \"Heineken is a pale lager beer with 5% alcohol by volume produced by the Dutch brewing company Heineken International.\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/beer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"beer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/beer/1",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"Name\": \"Guinness\",\r\n  \"Type\": \"Lager\",\r\n  \"Picture\": \"https://example.com/guinness.jpg\",\r\n  \"Detail\": \"Guinness is a dark Irish dry stout that originated in the brewery of Arthur Guinness at St. James's Gate, Dublin.\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/beer/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"beer",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/beer/1",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/beer/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"beer",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
