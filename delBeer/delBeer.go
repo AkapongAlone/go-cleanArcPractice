@@ -24,7 +24,7 @@ func DelBeer(c *gin.Context) {
 		})
 		return
 	}
-	del = db.Db.Delete(&db.DetailBeer{},id)
+	del = db.Db.Delete(&db.DetailBeer{},id-1)
 	if err := del.Error; err != nil { 
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

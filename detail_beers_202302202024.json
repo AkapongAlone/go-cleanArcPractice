@@ -1,0 +1,51 @@
+{
+"detail_beers": [
+	{
+		"id" : 4,
+		"created_at" : "2023-02-20T13:09:15.116Z",
+		"updated_at" : "2023-02-20T13:09:15.116Z",
+		"deleted_at" : null,
+		"type" : "Lager",
+		"detail" : "Heineken is a pale lager beer with 5% alcohol by volume produced by the Dutch brewing company Heineken International."
+	},
+	{
+		"id" : 5,
+		"created_at" : "2023-02-20T13:10:12.184Z",
+		"updated_at" : "2023-02-20T13:10:12.184Z",
+		"deleted_at" : null,
+		"type" : "Stout",
+		"detail" : "Guinness is a dark Irish dry stout that originated in the brewery of Arthur Guinness at St. James's Gate, Dublin."
+	},
+	{
+		"id" : 6,
+		"created_at" : "2023-02-20T13:10:41.312Z",
+		"updated_at" : "2023-02-20T13:10:41.312Z",
+		"deleted_at" : null,
+		"type" : "Pale Lager",
+		"detail" : "Corona Extra is a pale lager produced by Mexican brewery Cervecería Modelo and owned by Belgian company AB InBev."
+	},
+	{
+		"id" : 7,
+		"created_at" : "2023-02-20T13:11:13.526Z",
+		"updated_at" : "2023-02-20T13:11:13.526Z",
+		"deleted_at" : null,
+		"type" : "Belgian Strong Dark Ale",
+		"detail" : "Chimay Blue is a Belgian Trappist beer that is brewed within the walls of the Abbaye Notre-Dame de Scourmont monastery in Belgium."
+	},
+	{
+		"id" : 8,
+		"created_at" : "2023-02-20T13:11:55.858Z",
+		"updated_at" : "2023-02-20T13:11:55.858Z",
+		"deleted_at" : null,
+		"type" : "Pale Lager",
+		"detail" : "Budweiser is an American-style pale lager produced by Anheuser-Busch."
+	},
+	{
+		"id" : 9,
+		"created_at" : "2023-02-20T13:14:19.424Z",
+		"updated_at" : "2023-02-20T13:20:51.274Z",
+		"deleted_at" : "2023-02-20T13:21:25.116Z",
+		"type" : "Lager",
+		"detail" : "Guinness is a dark Irish dry stout that originated in the brewery of Arthur Guinness at St. James's Gate, Dublin."
+	}
+]}

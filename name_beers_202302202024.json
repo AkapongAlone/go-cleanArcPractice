@@ -1,0 +1,57 @@
+{
+"name_beers": [
+	{
+		"id" : 5,
+		"created_at" : "2023-02-20T13:09:15.113Z",
+		"updated_at" : "2023-02-20T13:09:15.113Z",
+		"deleted_at" : null,
+		"name" : "Heineken",
+		"type" : "Lager",
+		"picture" : "https:\/\/example.com\/heineken.jpg"
+	},
+	{
+		"id" : 6,
+		"created_at" : "2023-02-20T13:10:12.183Z",
+		"updated_at" : "2023-02-20T13:10:12.183Z",
+		"deleted_at" : null,
+		"name" : "Guinness",
+		"type" : "Stout",
+		"picture" : "https:\/\/example.com\/guinness.jpg"
+	},
+	{
+		"id" : 7,
+		"created_at" : "2023-02-20T13:10:41.310Z",
+		"updated_at" : "2023-02-20T13:10:41.310Z",
+		"deleted_at" : null,
+		"name" : "Corona Extra",
+		"type" : "Pale Lager",
+		"picture" : "https:\/\/example.com\/corona-extra.jpg"
+	},
+	{
+		"id" : 8,
+		"created_at" : "2023-02-20T13:11:13.525Z",
+		"updated_at" : "2023-02-20T13:11:13.525Z",
+		"deleted_at" : null,
+		"name" : "Chimay Blue",
+		"type" : "Belgian Strong Dark Ale",
+		"picture" : "https:\/\/example.com\/chimay-blue.jpg"
+	},
+	{
+		"id" : 9,
+		"created_at" : "2023-02-20T13:11:55.857Z",
+		"updated_at" : "2023-02-20T13:11:55.857Z",
+		"deleted_at" : null,
+		"name" : "Budweiser",
+		"type" : "Pale Lager",
+		"picture" : "https:\/\/example.com\/budweiser.jpg"
+	},
+	{
+		"id" : 10,
+		"created_at" : "2023-02-20T13:14:19.423Z",
+		"updated_at" : "2023-02-20T13:20:51.272Z",
+		"deleted_at" : "2023-02-20T13:21:25.115Z",
+		"name" : "Guinness",
+		"type" : "Lager",
+		"picture" : "https:\/\/example.com\/guinness.jpg"
+	}
+]}

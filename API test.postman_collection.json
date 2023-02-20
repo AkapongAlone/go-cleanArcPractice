@@ -43,7 +43,12 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"Name\": \"Heineken\",\r\n  \"Type\": \"Lager\",\r\n  \"Picture\": \"https://example.com/heineken.jpg\",\r\n  \"Detail\": \"Heineken is a pale lager beer with 5% alcohol by volume produced by the Dutch brewing company Heineken International.\"\r\n}"
+					"raw": "{\r\n  \"name\": \"Sapporo\",\r\n  \"type\": \"Pale Lager\",\r\n  \"picture\": \"https://example.com/sapporo.jpg\",\r\n  \"detail\": \"Sapporo is a Japanese beer brand that originated in Sapporo, Japan, and is now brewed under license in various countries.\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "http://localhost:8080/beer",
@@ -82,7 +87,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": null
+							"value": "10"
 						}
 					]
 				}
@@ -108,7 +113,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": null
+							"value": "10"
 						}
 					]
 				}

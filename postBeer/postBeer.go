@@ -1,7 +1,7 @@
 package postbeer
 
 import (
-	"fmt"
+	_"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -10,16 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type result struct {
-	Name  string
-	Type string
-	Picture	string
-	Detail string
-  }
+
 
 func PostBeer(c *gin.Context) {
-	var result result
+	var result db.Result
 	var nameBeer db.NameBeer
+	var detailBeer db.DetailBeer
 	
 	if err := c.ShouldBindJSON(&result); err != nil { 
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -31,35 +27,39 @@ func PostBeer(c *gin.Context) {
 	nameBeer.Name = result.Name
 	nameBeer.Type = result.Type
 	nameBeer.Picture = result.Picture
-	fmt.Println(nameBeer)
+	detailBeer.Type = result.Type
+	detailBeer.Detail = result.Detail
+	
 	insertName := db.Db.Create(&nameBeer)
 	if err := insertName.Error; err != nil { 
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
+			"status": "cannot insert",
+			"data":nameBeer,
 		})
 		return
 	}
 	
-	var detailBeer db.DetailBeer
-	detailBeer.Type = result.Type
-	detailBeer.Type = result.Detail
+	
 
 	insertDetail := db.Db.Create(&detailBeer)
 
 	if err := insertDetail.Error; err != nil { 
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
+			
 		})
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{
 		"Status": "success",
-		
+		"dataDetail":detailBeer,
+		"dataName":nameBeer,
 	})
 }
 
 
-func uploadImg(data *result,c *gin.Context)  {
+func uploadImg(data *db.Result,c *gin.Context)  {
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

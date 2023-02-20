@@ -8,16 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type result struct {
-	Name  string
-	Type string
-	Picture	string
-	Detail string
-  }
 
 func GetBeer(c *gin.Context) {
 	
-	var result []result
+	var result []db.Result
 	nameParam := c.Query("name")
     limitParam := c.Query("limit")
 	limit,err :=strconv.Atoi(limitParam)
@@ -28,9 +22,6 @@ func GetBeer(c *gin.Context) {
 		return
 	}
 	
-
-	
-
 	db.Db.Table("name_beers").Select("name_beers.name, name_beers.type, name_beers.picture, detail_beers.detail").
 	Joins("left join detail_beers on detail_beers.type = name_beers.type").
 	Where("name_beers.name = ?", nameParam).Limit(limit).Scan(&result)
