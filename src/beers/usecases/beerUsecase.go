@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"io"
 	"log"
 	"mime/multipart"
 	"os"
@@ -59,11 +60,19 @@ func (t *beerUseCase)DeleteBeer(id int) (error){
 func (t *beerUseCase)Upload(header *multipart.FileHeader)(string,error){
 	
 	fileName:= header.Filename
+	src, err := header.Open()
+	if err != nil {
+		return "", err
+	}
+	defer src.Close()
 	out, err := os.Create("./images/" + fileName)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer out.Close()
+	if _, err := io.Copy(out, src); err != nil {
+		return "", err
+	}
 	filePath := "http://localhost:8080/file/" + fileName
 	return filePath,nil
 }
