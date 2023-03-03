@@ -1,0 +1,8 @@
+# Database
+DB_HOST=0.0.0.0
+DB_PORT=5432
+DB_USERNAME=bem_iams
+DB_PASSWORD=1234
+DB_DATABASE=test_aek
+
+SECRET="vQ=+3ST(+w2be4E"
