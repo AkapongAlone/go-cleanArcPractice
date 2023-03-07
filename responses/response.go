@@ -5,6 +5,28 @@ type RequestError struct {
 	Err    map[string]string `json:"error"`
 }
 
+type PaginationBody struct {
+	CurrentPage	int
+	Items []ItemBody
+	NextPage  int
+	PreviousPage int
+	SizePerPage int
+	TotalItems int
+	TotalPages int
+
+}
+
+type ItemBody struct {
+	Created_at string
+	Created_by int `default:"0"`
+	ID 	int
+	Name	string
+	Status int 		`default:"0"`
+	Updated_at string
+	Updated_by int  `default:"0"`
+}
+
+
 type HandleRequestError struct {
 	Status bool   `json:"status"`
 	Err    string `json:"error"`

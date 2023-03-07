@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/AkapongAlone/komgrip-test/models"
-	_ "github.com/AkapongAlone/komgrip-test/requests"
+	"github.com/AkapongAlone/komgrip-test/requests"
 	"github.com/AkapongAlone/komgrip-test/src/beers/domains"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
@@ -23,7 +23,7 @@ func NewBeerHandler(usecase domains.BeerUseCase) *BeerHandler {
 func (t *BeerHandler) GetBeer(c *gin.Context) {
 	nameParam := c.Query("name")
 	limitParam := c.Query("limit")
-	offsetParam := c.Query("offset")
+	pageParam := c.Query("page")
 	limit, err := strconv.Atoi(limitParam)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -31,7 +31,7 @@ func (t *BeerHandler) GetBeer(c *gin.Context) {
 		})
 		return
 	}
-	offset, err := strconv.Atoi(offsetParam)
+	offset, err := strconv.Atoi(pageParam)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -51,7 +51,7 @@ func (t *BeerHandler) GetBeer(c *gin.Context) {
 }
 
 func (t *BeerHandler) PostBeer(c *gin.Context) {
-	var beerInputData models.Beer
+	var beerInputData requests.Beer
 	if err := c.ShouldBind(&beerInputData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":   err.Error(),
@@ -91,7 +91,7 @@ func (t *BeerHandler) PostBeer(c *gin.Context) {
 }
 
 func (t *BeerHandler) UpdateBeer(c *gin.Context) {
-	var result models.Beer
+	var result requests.Beer
 	if err := c.ShouldBind(&result); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

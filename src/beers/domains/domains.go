@@ -5,10 +5,12 @@ import (
 
 	"github.com/AkapongAlone/komgrip-test/models"
 	_ "github.com/AkapongAlone/komgrip-test/requests"
+	"github.com/AkapongAlone/komgrip-test/responses"
+
 )
 
 type BeerUseCase interface {
-	GetBeer(name string,limit int,offset int) ([]models.BeerDB,error)
+	GetBeer(name string,limit int,offset int) (responses.PaginationBody,error)
 	PostBeer(request models.BeerDB) (error)
 	UpdateBeer(id int,request models.BeerDB) (error)
 	DeleteBeer(id int) (error)
@@ -20,5 +22,6 @@ type BeerRepositories interface {
 	InsertData(data models.BeerDB)(error)
 	EditData(id int,data models.BeerDB)(error)
 	DeleteData(id int)(error)
+	CountAllData(name string)(int)
 	
 }

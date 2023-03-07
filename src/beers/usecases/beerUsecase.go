@@ -8,6 +8,7 @@ import (
 
 	"github.com/AkapongAlone/komgrip-test/models"
 	_ "github.com/AkapongAlone/komgrip-test/requests"
+	"github.com/AkapongAlone/komgrip-test/responses"
 	"github.com/AkapongAlone/komgrip-test/src/beers/domains"
 )
 
@@ -21,35 +22,73 @@ func NewBeerUseCase(repo domains.BeerRepositories) domains.BeerUseCase {
 	}
 }
 
-func (t *beerUseCase)GetBeer(name string,limit int,offset int) ([]models.BeerDB,error){
-		result,err := t.beerRepo.FindData(name,limit,offset)
-		if err != nil {
-			return result,err
+func (t *beerUseCase) GetBeer(name string, limit int, page int) (responses.PaginationBody, error) {
+	var items []responses.ItemBody
+	offset := (page - 1) * limit
+	result, err := t.beerRepo.FindData(name, limit, offset)
+	if err != nil {
+		return responses.PaginationBody{}, err
+	}
+	for _,item := range result {
+		itemBody := responses.ItemBody{
+			Created_at : item.CreatedAt.String(),
+			ID : item.ID,
+			Name : name,
+			Updated_at: item.UpdatedAt.String(),
 		}
-		return result,nil
-}
-
-func (t *beerUseCase)PostBeer(result models.BeerDB) (error){
-		
-		err := t.beerRepo.InsertData(result)
-		if err != nil {
-			return err
-		}
-		return nil
+		items = append(items, itemBody)
+	}
+	totalItem := t.beerRepo.CountAllData(name)
+	totalPage := totalItem / limit
+	switch {
+	case totalPage == 0: totalPage = 1
+	case (totalItem % limit != 0): totalPage++
+	}
 	
+	var nextPage,prevPage int
+	if page == totalPage {
+		nextPage = page
+	} else {
+		nextPage = page + 1
+	}
+	if page > 1 {
+		prevPage = page -1
+	} else {
+		prevPage = page
+	}
+	respond := responses.PaginationBody {
+		CurrentPage: page,
+		Items: items,
+		NextPage: nextPage,
+		PreviousPage: prevPage,
+		SizePerPage: limit,
+		TotalItems: totalItem,
+		TotalPages: totalPage,
+	}
+	return respond, nil
 }
 
-func (t *beerUseCase)UpdateBeer(id int,result models.BeerDB) (error){
+func (t *beerUseCase) PostBeer(result models.BeerDB) error {
+
+	err := t.beerRepo.InsertData(result)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (t *beerUseCase) UpdateBeer(id int, result models.BeerDB) error {
 	// var nameBeer models.BeerDB
-	
-	err := t.beerRepo.EditData(id,result)
+
+	err := t.beerRepo.EditData(id, result)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (t *beerUseCase)DeleteBeer(id int) (error){
+func (t *beerUseCase) DeleteBeer(id int) error {
 	err := t.beerRepo.DeleteData(id)
 	if err != nil {
 		return err
@@ -57,9 +96,9 @@ func (t *beerUseCase)DeleteBeer(id int) (error){
 	return nil
 }
 
-func (t *beerUseCase)Upload(header *multipart.FileHeader)(string,error){
-	
-	fileName:= header.Filename
+func (t *beerUseCase) Upload(header *multipart.FileHeader) (string, error) {
+
+	fileName := header.Filename
 	src, err := header.Open()
 	if err != nil {
 		return "", err
@@ -74,5 +113,5 @@ func (t *beerUseCase)Upload(header *multipart.FileHeader)(string,error){
 		return "", err
 	}
 	filePath := "http://localhost:8080/file/" + fileName
-	return filePath,nil
+	return filePath, nil
 }

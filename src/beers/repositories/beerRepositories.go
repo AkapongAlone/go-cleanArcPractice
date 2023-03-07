@@ -21,17 +21,25 @@ func NewBeerHandler(conn *gorm.DB) *handler.BeerHandler	{
 	return handle
 }
 
+func (t *beerRepositories) CountAllData(name string) (int) {
+	var count int64
+	// t.conn.Model(&models.BeerDB{}).Where(&models.BeerDB{Name:name}).Count(&count)
+	t.conn.Model(&models.BeerDB{}).Count(&count)
+	fmt.Println(count)
+	return int(count)
+}
+
 func (t *beerRepositories) FindData(name string,limit int,offset int) ([]models.BeerDB,error) {
 	var result []models.BeerDB
 	t.conn.Where(&models.BeerDB{Name:name}).Limit(limit).Offset(offset).Find(&result)
 	if result == nil {
 		return result,errors.New("data not found")
 	}
+	fmt.Println(len(result))
 	return result,nil
 }
 
 func (t *beerRepositories) InsertData(name models.BeerDB)(error){
-	fmt.Println(name,"hello from repo func")
 	err := t.conn.Create(&name).Error
 	if err != nil { 
 		return err
