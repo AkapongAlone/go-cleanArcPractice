@@ -20,10 +20,25 @@ func NewBeerHandler(usecase domains.BeerUseCase) *BeerHandler {
 	return &BeerHandler{beerUseCase: usecase}
 }
 
+// @summary
+// @description
+// @tags beer
+// @Param name query string false "Insert Name"
+// @Param limit query string false "Insert limit of items"
+// @Param page query string false "Insert current page"
+// @response 200 {object} responses.PaginationBody 
+// @router /beer [get]
 func (t *BeerHandler) GetBeer(c *gin.Context) {
 	nameParam := c.Query("name")
 	limitParam := c.Query("limit")
 	pageParam := c.Query("page")
+
+	if limitParam == ""{
+		limitParam = "10"
+	}
+	if pageParam == "" {
+		pageParam ="1"
+	}
 	limit, err := strconv.Atoi(limitParam)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -50,6 +65,12 @@ func (t *BeerHandler) GetBeer(c *gin.Context) {
 	})
 }
 
+// @summary
+// @description
+// @tags beer
+// @param Beer body requests.Beer true "Beer data"
+// @response 200 {object} responses.NoDataResponse "OK"
+// @router /beer [post]
 func (t *BeerHandler) PostBeer(c *gin.Context) {
 	var beerInputData requests.Beer
 	if err := c.ShouldBind(&beerInputData); err != nil {
@@ -90,6 +111,13 @@ func (t *BeerHandler) PostBeer(c *gin.Context) {
 	})
 }
 
+// @summary
+// @description
+// @tags beer
+// @param Beer body requests.Beer true "Beer data"
+// @Param ID query string true "Insert ID"
+// @response 200 {object} responses.NoDataResponse "OK"
+// @router /beer [put]
 func (t *BeerHandler) UpdateBeer(c *gin.Context) {
 	var result requests.Beer
 	if err := c.ShouldBind(&result); err != nil {
@@ -106,7 +134,15 @@ func (t *BeerHandler) UpdateBeer(c *gin.Context) {
 		c.String(http.StatusBadRequest, fmt.Sprintf("file err : %s", err.Error()))
 		return
 	}
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
 
+	t.beerUseCase.Remove(id)
 	beer.Picture, err = t.beerUseCase.Upload(file)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -115,14 +151,9 @@ func (t *BeerHandler) UpdateBeer(c *gin.Context) {
 
 		return
 	}
-	idParam := c.Param("id")
-	fmt.Println(idParam,"idParam")
-	id, err := strconv.Atoi(idParam)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-	}
+	
+	
+	
 	fmt.Println(id)
 	err = t.beerUseCase.UpdateBeer(id, beer)
 	if err != nil {
@@ -132,10 +163,16 @@ func (t *BeerHandler) UpdateBeer(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"data": result,
+		"data": beer,
 	})
 }
 
+// @summary
+// @description
+// @tags beer
+// @Param ID query string true "Insert ID"
+// @response 200
+// @router /beer [delete]
 func (t *BeerHandler) DeleteBeer(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)

@@ -14,17 +14,215 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/beer": {
+            "get": {
+                "tags": [
+                    "beer"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert Name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Insert limit of items",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Insert current page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.PaginationBody"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "beer"
+                ],
+                "parameters": [
+                    {
+                        "description": "Beer data",
+                        "name": "Beer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.Beer"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Insert ID",
+                        "name": "ID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.NoDataResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "beer"
+                ],
+                "parameters": [
+                    {
+                        "description": "Beer data",
+                        "name": "Beer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.Beer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.NoDataResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "beer"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert ID",
+                        "name": "ID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "requests.Beer": {
+            "type": "object"
+        },
+        "responses.ItemBody": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "integer",
+                    "default": 0
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer",
+                    "default": 0
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "integer",
+                    "default": 0
+                }
+            }
+        },
+        "responses.NoData": {
+            "type": "object"
+        },
+        "responses.NoDataResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "boolean",
+                    "x-order": "0",
+                    "example": true
+                },
+                "code": {
+                    "type": "integer",
+                    "x-order": "1"
+                },
+                "data": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/responses.NoData"
+                        }
+                    ],
+                    "x-order": "1"
+                }
+            }
+        },
+        "responses.PaginationBody": {
+            "type": "object",
+            "properties": {
+                "currentPage": {
+                    "type": "integer"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/responses.ItemBody"
+                    }
+                },
+                "nextPage": {
+                    "type": "integer"
+                },
+                "previousPage": {
+                    "type": "integer"
+                },
+                "sizePerPage": {
+                    "type": "integer"
+                },
+                "totalItems": {
+                    "type": "integer"
+                },
+                "totalPages": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/api",
+	Version:          "",
+	Host:             "",
+	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Tag Service API",
-	Description:      "A Tag service API in Go using Gin framework",
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

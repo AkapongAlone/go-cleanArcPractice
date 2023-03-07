@@ -2,12 +2,12 @@ package routes
 
 import (
 	"net/http"
-
-	_ "github.com/AkapongAlone/docs"
+	 _"github.com/AkapongAlone/komgrip-test/docs"
 	db "github.com/AkapongAlone/komgrip-test/database"
 	_ "github.com/AkapongAlone/komgrip-test/src/beers/handler"
 	"github.com/AkapongAlone/komgrip-test/src/beers/repositories"
 	"github.com/gin-gonic/gin"
+	"github.com/AkapongAlone/komgrip-test/middlewares"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -30,12 +30,16 @@ func SetupRouter() *gin.Engine {
 		}
 	})
 	// add swagger
-	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	
 	handle := repositories.NewBeerHandler(db.Db)
-	r.GET("/beer", handle.GetBeer)
-	r.POST("/beer", handle.PostBeer)
-	r.PUT("/beer/:id", handle.UpdateBeer)
-	r.DELETE("/beer/:id", handle.DeleteBeer)
+	beerGroup := r.Group("/api/v1")
+	beerGroup.GET("/beer", handle.GetBeer)
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	beerGroup.Use(middlewares.LoggingInfoMiddleware())
+		{beerGroup.POST("/beer", handle.PostBeer)
+		beerGroup.PUT("/beer/:id", handle.UpdateBeer)
+		beerGroup.DELETE("/beer/:id", handle.DeleteBeer)
+		}
 	r.StaticFS("/file/", http.Dir("images"))
 	return r
 }

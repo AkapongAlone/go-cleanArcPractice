@@ -15,6 +15,7 @@ type BeerUseCase interface {
 	UpdateBeer(id int,request models.BeerDB) (error)
 	DeleteBeer(id int) (error)
 	Upload(header *multipart.FileHeader)(string,error)
+	Remove(id int)(error)
 }
 
 type BeerRepositories interface {
@@ -23,5 +24,5 @@ type BeerRepositories interface {
 	EditData(id int,data models.BeerDB)(error)
 	DeleteData(id int)(error)
 	CountAllData(name string)(int)
-	
+	FindPicture(id int)(string,error)
 }

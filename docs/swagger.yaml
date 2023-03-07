@@ -1,9 +1,131 @@
-basePath: /api
-host: localhost:8080
+definitions:
+  requests.Beer:
+    type: object
+  responses.ItemBody:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        default: 0
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      status:
+        default: 0
+        type: integer
+      updated_at:
+        type: string
+      updated_by:
+        default: 0
+        type: integer
+    type: object
+  responses.NoData:
+    type: object
+  responses.NoDataResponse:
+    properties:
+      code:
+        type: integer
+        x-order: "1"
+      data:
+        allOf:
+        - $ref: '#/definitions/responses.NoData'
+        x-order: "1"
+      status:
+        example: true
+        type: boolean
+        x-order: "0"
+    type: object
+  responses.PaginationBody:
+    properties:
+      currentPage:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/responses.ItemBody'
+        type: array
+      nextPage:
+        type: integer
+      previousPage:
+        type: integer
+      sizePerPage:
+        type: integer
+      totalItems:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
 info:
   contact: {}
-  description: A Tag service API in Go using Gin framework
-  title: Tag Service API
-  version: "1.0"
-paths: {}
+paths:
+  /beer:
+    delete:
+      parameters:
+      - description: Insert ID
+        in: query
+        name: ID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      tags:
+      - beer
+    get:
+      parameters:
+      - description: Insert Name
+        in: query
+        name: name
+        type: string
+      - description: Insert limit of items
+        in: query
+        name: limit
+        type: string
+      - description: Insert current page
+        in: query
+        name: page
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.PaginationBody'
+      tags:
+      - beer
+    post:
+      parameters:
+      - description: Beer data
+        in: body
+        name: Beer
+        required: true
+        schema:
+          $ref: '#/definitions/requests.Beer'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.NoDataResponse'
+      tags:
+      - beer
+    put:
+      parameters:
+      - description: Beer data
+        in: body
+        name: Beer
+        required: true
+        schema:
+          $ref: '#/definitions/requests.Beer'
+      - description: Insert ID
+        in: query
+        name: ID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.NoDataResponse'
+      tags:
+      - beer
 swagger: "2.0"

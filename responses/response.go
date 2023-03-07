@@ -5,6 +5,8 @@ type RequestError struct {
 	Err    map[string]string `json:"error"`
 }
 
+type NoData struct{}
+
 type PaginationBody struct {
 	CurrentPage	int
 	Items []ItemBody
@@ -21,6 +23,9 @@ type ItemBody struct {
 	Created_by int `default:"0"`
 	ID 	int
 	Name	string
+	Picture string
+	Detail	string
+	Type 	string
 	Status int 		`default:"0"`
 	Updated_at string
 	Updated_by int  `default:"0"`
@@ -51,4 +56,10 @@ func SuccessRequest(err error) HandleRequestError {
 	request.Err = ""
 	request.Status = true
 	return request
+}
+
+type NoDataResponse struct {
+	Status bool   `json:"status" example:"true" extensions:"x-order=0"`
+	Code   int    `json:"code" extensions:"x-order=1"`
+	Data   NoData `json:"data" extensions:"x-order=1"`
 }

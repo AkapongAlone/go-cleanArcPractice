@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
@@ -10,7 +11,7 @@ import (
 	_ "github.com/AkapongAlone/komgrip-test/requests"
 	"github.com/AkapongAlone/komgrip-test/responses"
 	"github.com/AkapongAlone/komgrip-test/src/beers/domains"
-	_"github.com/swaggo/swag/example/celler/httputil"
+	_ "github.com/swaggo/swag/example/celler/httputil"
 )
 
 type beerUseCase struct {
@@ -23,7 +24,6 @@ func NewBeerUseCase(repo domains.BeerRepositories) domains.BeerUseCase {
 	}
 }
 
-
 func (t *beerUseCase) GetBeer(name string, limit int, page int) (responses.PaginationBody, error) {
 	var items []responses.ItemBody
 	offset := (page - 1) * limit
@@ -31,13 +31,19 @@ func (t *beerUseCase) GetBeer(name string, limit int, page int) (responses.Pagin
 	if err != nil {
 		return responses.PaginationBody{}, err
 	}
-	
-
+	// err = godotenv.Load(".env")
+	// if err != nil {
+	// 	log.Panicln("consider env var")
+	// }
+	host := os.Getenv("HOST")
 	for _, item := range result {
 		itemBody := responses.ItemBody{
 			Created_at: item.CreatedAt.String(),
 			ID:         item.ID,
 			Name:       name,
+			Picture:    host + "/file/" + item.Picture,
+			Detail:     item.Detail,
+			Type:       item.Type,
 			Updated_at: item.UpdatedAt.String(),
 		}
 		items = append(items, itemBody)
@@ -118,6 +124,20 @@ func (t *beerUseCase) Upload(header *multipart.FileHeader) (string, error) {
 	if _, err := io.Copy(out, src); err != nil {
 		return "", err
 	}
-	filePath := "http://localhost:8080/file/" + fileName
-	return filePath, nil
+	// filePath := "http://localhost:8080/file/" + fileName
+	return fileName, nil
+}
+
+func (t *beerUseCase) Remove(id int) error {
+
+	fileName, err := t.beerRepo.FindPicture(id)
+	fmt.Println(fileName)
+	if err != nil {
+		return err
+	}
+	err = os.Remove("./images/" + fileName)
+	if err != nil {
+		return err
+	}
+	return nil
 }
