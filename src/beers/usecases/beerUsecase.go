@@ -10,6 +10,7 @@ import (
 	_ "github.com/AkapongAlone/komgrip-test/requests"
 	"github.com/AkapongAlone/komgrip-test/responses"
 	"github.com/AkapongAlone/komgrip-test/src/beers/domains"
+	_"github.com/swaggo/swag/example/celler/httputil"
 )
 
 type beerUseCase struct {
@@ -22,6 +23,7 @@ func NewBeerUseCase(repo domains.BeerRepositories) domains.BeerUseCase {
 	}
 }
 
+
 func (t *beerUseCase) GetBeer(name string, limit int, page int) (responses.PaginationBody, error) {
 	var items []responses.ItemBody
 	offset := (page - 1) * limit
@@ -29,11 +31,13 @@ func (t *beerUseCase) GetBeer(name string, limit int, page int) (responses.Pagin
 	if err != nil {
 		return responses.PaginationBody{}, err
 	}
-	for _,item := range result {
+	
+
+	for _, item := range result {
 		itemBody := responses.ItemBody{
-			Created_at : item.CreatedAt.String(),
-			ID : item.ID,
-			Name : name,
+			Created_at: item.CreatedAt.String(),
+			ID:         item.ID,
+			Name:       name,
 			Updated_at: item.UpdatedAt.String(),
 		}
 		items = append(items, itemBody)
@@ -41,29 +45,31 @@ func (t *beerUseCase) GetBeer(name string, limit int, page int) (responses.Pagin
 	totalItem := t.beerRepo.CountAllData(name)
 	totalPage := totalItem / limit
 	switch {
-	case totalPage == 0: totalPage = 1
-	case (totalItem % limit != 0): totalPage++
+	case totalPage == 0:
+		totalPage = 1
+	case (totalItem%limit != 0):
+		totalPage++
 	}
-	
-	var nextPage,prevPage int
+
+	var nextPage, prevPage int
 	if page == totalPage {
 		nextPage = page
 	} else {
 		nextPage = page + 1
 	}
 	if page > 1 {
-		prevPage = page -1
+		prevPage = page - 1
 	} else {
 		prevPage = page
 	}
-	respond := responses.PaginationBody {
-		CurrentPage: page,
-		Items: items,
-		NextPage: nextPage,
+	respond := responses.PaginationBody{
+		CurrentPage:  page,
+		Items:        items,
+		NextPage:     nextPage,
 		PreviousPage: prevPage,
-		SizePerPage: limit,
-		TotalItems: totalItem,
-		TotalPages: totalPage,
+		SizePerPage:  limit,
+		TotalItems:   totalItem,
+		TotalPages:   totalPage,
 	}
 	return respond, nil
 }

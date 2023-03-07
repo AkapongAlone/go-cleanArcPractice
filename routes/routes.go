@@ -3,12 +3,14 @@ package routes
 import (
 	"net/http"
 
+	_ "github.com/AkapongAlone/docs"
 	db "github.com/AkapongAlone/komgrip-test/database"
 	_ "github.com/AkapongAlone/komgrip-test/src/beers/handler"
 	"github.com/AkapongAlone/komgrip-test/src/beers/repositories"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
-
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
@@ -27,11 +29,13 @@ func SetupRouter() *gin.Engine {
 			c.Next()
 		}
 	})
+	// add swagger
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	handle := repositories.NewBeerHandler(db.Db)
-	r.GET("/beer",handle.GetBeer)
-	r.POST("/beer",handle.PostBeer)
-	r.PUT("/beer/:id",handle.UpdateBeer)
-	r.DELETE("/beer/:id",handle.DeleteBeer)
-	r.StaticFS("/file/",http.Dir("images"))
+	r.GET("/beer", handle.GetBeer)
+	r.POST("/beer", handle.PostBeer)
+	r.PUT("/beer/:id", handle.UpdateBeer)
+	r.DELETE("/beer/:id", handle.DeleteBeer)
+	r.StaticFS("/file/", http.Dir("images"))
 	return r
 }
