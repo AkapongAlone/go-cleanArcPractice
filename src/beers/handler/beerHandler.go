@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-
+	"github.com/AkapongAlone/komgrip-test/helper"
 	"github.com/AkapongAlone/komgrip-test/models"
 	"github.com/AkapongAlone/komgrip-test/requests"
 	"github.com/AkapongAlone/komgrip-test/src/beers/domains"
@@ -27,7 +27,7 @@ func NewBeerHandler(usecase domains.BeerUseCase) *BeerHandler {
 // @Param limit query string false "Insert limit of items"
 // @Param page query string false "Insert current page"
 // @response 200 {object} responses.PaginationBody 
-// @router /beer [get]
+// @router /api/v1/beer [get]
 func (t *BeerHandler) GetBeer(c *gin.Context) {
 	nameParam := c.Query("name")
 	limitParam := c.Query("limit")
@@ -70,7 +70,7 @@ func (t *BeerHandler) GetBeer(c *gin.Context) {
 // @tags beer
 // @param Beer body requests.Beer true "Beer data"
 // @response 200 {object} responses.NoDataResponse "OK"
-// @router /beer [post]
+// @router /api/v1/beer [post]
 func (t *BeerHandler) PostBeer(c *gin.Context) {
 	var beerInputData requests.Beer
 	if err := c.ShouldBind(&beerInputData); err != nil {
@@ -117,7 +117,7 @@ func (t *BeerHandler) PostBeer(c *gin.Context) {
 // @param Beer body requests.Beer true "Beer data"
 // @Param ID query string true "Insert ID"
 // @response 200 {object} responses.NoDataResponse "OK"
-// @router /beer [put]
+// @router /api/v1/beer [put]
 func (t *BeerHandler) UpdateBeer(c *gin.Context) {
 	var result requests.Beer
 	if err := c.ShouldBind(&result); err != nil {
@@ -151,10 +151,6 @@ func (t *BeerHandler) UpdateBeer(c *gin.Context) {
 
 		return
 	}
-	
-	
-	
-	fmt.Println(id)
 	err = t.beerUseCase.UpdateBeer(id, beer)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -162,6 +158,7 @@ func (t *BeerHandler) UpdateBeer(c *gin.Context) {
 		})
 		return
 	}
+	beer.Picture = helper.GetPathImg(beer.Picture)
 	c.JSON(http.StatusOK, gin.H{
 		"data": beer,
 	})
@@ -172,7 +169,7 @@ func (t *BeerHandler) UpdateBeer(c *gin.Context) {
 // @tags beer
 // @Param ID query string true "Insert ID"
 // @response 200
-// @router /beer [delete]
+// @router /api/v1/beer [delete]
 func (t *BeerHandler) DeleteBeer(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -181,6 +178,7 @@ func (t *BeerHandler) DeleteBeer(c *gin.Context) {
 			"error": err.Error(),
 		})
 	}
+	t.beerUseCase.Remove(id)
 	err = t.beerUseCase.DeleteBeer(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

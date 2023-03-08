@@ -6,7 +6,7 @@ import (
 	"log"
 	"mime/multipart"
 	"os"
-
+	"github.com/AkapongAlone/komgrip-test/helper"
 	"github.com/AkapongAlone/komgrip-test/models"
 	_ "github.com/AkapongAlone/komgrip-test/requests"
 	"github.com/AkapongAlone/komgrip-test/responses"
@@ -31,17 +31,12 @@ func (t *beerUseCase) GetBeer(name string, limit int, page int) (responses.Pagin
 	if err != nil {
 		return responses.PaginationBody{}, err
 	}
-	// err = godotenv.Load(".env")
-	// if err != nil {
-	// 	log.Panicln("consider env var")
-	// }
-	host := os.Getenv("HOST")
 	for _, item := range result {
 		itemBody := responses.ItemBody{
 			Created_at: item.CreatedAt.String(),
 			ID:         item.ID,
 			Name:       name,
-			Picture:    host + "/file/" + item.Picture,
+			Picture:    helper.GetPathImg(item.Picture),
 			Detail:     item.Detail,
 			Type:       item.Type,
 			Updated_at: item.UpdatedAt.String(),

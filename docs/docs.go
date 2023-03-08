@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/beer": {
+        "/api/v1/beer": {
             "get": {
                 "tags": [
                     "beer"
@@ -139,15 +139,24 @@ const docTemplate = `{
                     "type": "integer",
                     "default": 0
                 },
+                "detail": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
+                "picture": {
+                    "type": "string"
+                },
                 "status": {
                     "type": "integer",
                     "default": 0
+                },
+                "type": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"

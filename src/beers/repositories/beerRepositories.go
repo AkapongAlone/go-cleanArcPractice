@@ -31,11 +31,14 @@ func (t *beerRepositories) CountAllData(name string) int {
 
 func (t *beerRepositories) FindData(name string, limit int, offset int) ([]models.BeerDB, error) {
 	var result []models.BeerDB
-	t.conn.Where(&models.BeerDB{Name: name}).Limit(limit).Offset(offset).Find(&result)
+	query := t.conn.Where(&models.BeerDB{Name: name}).Offset(offset).Find(&result)
 	if result == nil {
 		return result, errors.New("data not found")
 	}
-	fmt.Println(len(result))
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	query.Find(&result)
 	return result, nil
 }
 
@@ -69,7 +72,6 @@ func (t *beerRepositories) DeleteData(id int) error {
 	}
 
 	return nil
-
 }
 
 func (t *beerRepositories) FindPicture(id int) (string, error) {
@@ -77,8 +79,8 @@ func (t *beerRepositories) FindPicture(id int) (string, error) {
 	var data models.BeerDB
 	err := t.conn.Where("id = ?", id).First(&data).Error
 	if err != nil {
-		return "",err
+		return "", err
 	}
-	return data.Picture,nil
-	
+	return data.Picture, nil
+
 }

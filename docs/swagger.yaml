@@ -8,13 +8,19 @@ definitions:
       created_by:
         default: 0
         type: integer
+      detail:
+        type: string
       id:
         type: integer
       name:
         type: string
+      picture:
+        type: string
       status:
         default: 0
         type: integer
+      type:
+        type: string
       updated_at:
         type: string
       updated_by:
@@ -59,7 +65,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /beer:
+  /api/v1/beer:
     delete:
       parameters:
       - description: Insert ID
