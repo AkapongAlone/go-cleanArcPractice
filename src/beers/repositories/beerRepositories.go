@@ -43,7 +43,11 @@ func (t *beerRepositories) FindData(name string, limit int, offset int) ([]model
 }
 
 func (t *beerRepositories) InsertData(name models.BeerDB) error {
-	err := t.conn.Create(&name).Error
+	err := t.IsExistByName(name.Name)
+	if err != nil {
+		return err
+	}
+	err = t.conn.Create(&name).Error
 	if err != nil {
 		return err
 	}
@@ -51,22 +55,33 @@ func (t *beerRepositories) InsertData(name models.BeerDB) error {
 	return nil
 }
 
-func (t *beerRepositories) EditData(id int, name models.BeerDB) error {
-	fmt.Println(id)
-	var beforeEdit models.BeerDB
-	t.conn.Where("id = ?", id).First(&beforeEdit)
-	name.ID = id
-	err := t.conn.Model(&beforeEdit).Updates(name).Error
+func (t *beerRepositories) EditData(newData *models.BeerDB) error {
+	// var beforeEdit models.BeerDB
+
+	err := t.conn.Save(newData).Error
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (t *beerRepositories) FindByID(id int) (models.BeerDB, error) {
+	var beforeEdit models.BeerDB
+	err := t.conn.Where("id = ?", id).First(&beforeEdit).Error
+	if err != nil {
+		return beforeEdit, err
+	}
+	return beforeEdit, nil
 }
 
 func (t *beerRepositories) DeleteData(id int) error {
 
-	err := t.conn.Delete(&models.BeerDB{}, id).Error
+	_,err := t.FindByID(id)
+	if err != nil {
+		return err
+	}
+	err = t.conn.Delete(&models.BeerDB{}, id).Error
 	if err != nil {
 		return err
 	}
@@ -75,12 +90,27 @@ func (t *beerRepositories) DeleteData(id int) error {
 }
 
 func (t *beerRepositories) FindPicture(id int) (string, error) {
-	fmt.Println(id)
+
 	var data models.BeerDB
 	err := t.conn.Where("id = ?", id).First(&data).Error
 	if err != nil {
 		return "", err
 	}
 	return data.Picture, nil
+}
 
+
+func (t *beerRepositories) IsExistByName(name string) error {
+	var data models.BeerDB
+	count := int64(0)
+	if name != "" {
+		err := t.conn.Model(&data).Where("name = ?", name).Count(&count).Error
+		if err != nil {
+			return err
+		}
+		if count > 0 {
+			return errors.New("Already have this name.")
+		}
+	}
+	return nil
 }

@@ -6,11 +6,15 @@ import (
 	"log"
 	"mime/multipart"
 	"os"
+	"strconv"
+	"time"
+
 	"github.com/AkapongAlone/komgrip-test/helper"
 	"github.com/AkapongAlone/komgrip-test/models"
 	_ "github.com/AkapongAlone/komgrip-test/requests"
 	"github.com/AkapongAlone/komgrip-test/responses"
 	"github.com/AkapongAlone/komgrip-test/src/beers/domains"
+	"github.com/jinzhu/copier"
 	_ "github.com/swaggo/swag/example/celler/httputil"
 )
 
@@ -24,7 +28,45 @@ func NewBeerUseCase(repo domains.BeerRepositories) domains.BeerUseCase {
 	}
 }
 
+func (t *beerUseCase) GetBeerById(id int) (models.BeerDB,error) {
+	result,err := t.beerRepo.FindByID(id)
+	if err != nil {
+		return result,err
+	}
+	return result,nil
+}
+
+func (t *beerUseCase) GetImg(id int) (string,error) {
+	result,err := t.beerRepo.FindByID(id)
+	if err != nil {
+		return "",err
+	}
+	return result.Picture,nil
+}
+
 func (t *beerUseCase) GetBeer(name string, limit int, page int) (responses.PaginationBody, error) {
+	
+	totalItem := t.beerRepo.CountAllData(name)
+	var totalPage int
+	if limit != 0 {
+		totalPage = totalItem / limit
+		fmt.Println("totalpage1",totalPage)
+		switch {
+		case totalPage == 0:
+			totalPage = 1
+		case (totalItem%limit != 0):
+			totalPage++
+		}
+	} else {
+		totalPage = 1
+		limit = totalItem
+	}
+	fmt.Println("totalpage2",totalPage)
+	switch {
+	case page <= 0 :page =1
+	case page > totalPage:page = totalPage
+	}
+
 	var items []responses.ItemBody
 	offset := (page - 1) * limit
 	result, err := t.beerRepo.FindData(name, limit, offset)
@@ -42,14 +84,6 @@ func (t *beerUseCase) GetBeer(name string, limit int, page int) (responses.Pagin
 			Updated_at: item.UpdatedAt.String(),
 		}
 		items = append(items, itemBody)
-	}
-	totalItem := t.beerRepo.CountAllData(name)
-	totalPage := totalItem / limit
-	switch {
-	case totalPage == 0:
-		totalPage = 1
-	case (totalItem%limit != 0):
-		totalPage++
 	}
 
 	var nextPage, prevPage int
@@ -85,10 +119,29 @@ func (t *beerUseCase) PostBeer(result models.BeerDB) error {
 
 }
 
-func (t *beerUseCase) UpdateBeer(id int, result models.BeerDB) error {
-	// var nameBeer models.BeerDB
+func (t *beerUseCase) UpdateBeer(id int, newData *models.BeerDB) (error) {
+	// var oldData models.BeerDB
+	oldData,err := t.beerRepo.FindByID(id)
+	if err != nil {
+		return err
+	}
+	if oldData.Name != newData.Name {
+		err = t.beerRepo.IsExistByName(newData.Name)
+		if err != nil {
+			return err
+		}
+	}
+	
 
-	err := t.beerRepo.EditData(id, result)
+	
+	oldData.Name = newData.Name
+	oldData.Type = newData.Type
+	oldData.Picture = newData.Picture
+	oldData.Detail = newData.Detail
+	err = t.beerRepo.EditData(&oldData)
+
+	copier.Copy(&newData, oldData)
+	// err = t.beerRepo.FindByID(id)
 	if err != nil {
 		return err
 	}
@@ -111,7 +164,11 @@ func (t *beerUseCase) Upload(header *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 	defer src.Close()
-	out, err := os.Create("./images/" + fileName)
+	
+	timestamp := time.Now().UnixNano()
+    // create the new file name with the timestamp
+    newFileName := strconv.FormatInt(timestamp, 10) + fileName
+	out, err := os.Create("./images/" + newFileName)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -120,7 +177,7 @@ func (t *beerUseCase) Upload(header *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 	// filePath := "http://localhost:8080/file/" + fileName
-	return fileName, nil
+	return newFileName, nil
 }
 
 func (t *beerUseCase) Remove(id int) error {

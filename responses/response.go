@@ -8,29 +8,28 @@ type RequestError struct {
 type NoData struct{}
 
 type PaginationBody struct {
-	CurrentPage	int
-	Items []ItemBody
-	NextPage  int
-	PreviousPage int
-	SizePerPage int
-	TotalItems int
-	TotalPages int
+	CurrentPage	int		`json:"current_page"`
+	Items []ItemBody	`json:"items"`
+	NextPage  int		`json:"next_page"`
+	PreviousPage int	`json:"previous_page"`
+	SizePerPage int		`json:"size_per_page"`
+	TotalItems int		`json:"total_item"`
+	TotalPages int		`json:"total_page"`
 
 }
 
 type ItemBody struct {
-	Created_at string
-	Created_by int `default:"0"`
-	ID 	int
-	Name	string
-	Picture string
-	Detail	string
-	Type 	string
-	Status int 		`default:"0"`
-	Updated_at string
-	Updated_by int  `default:"0"`
+	Created_at string	`json:"created_at"`
+	Created_by int `default:"0" json:"created_by"`
+	ID 	int			`json:"id"`
+	Name	string `json:"name"`
+	Picture string	`json:"picture"`
+	Detail	string	`json:"detail"`
+	Type 	string	`json:"type"`
+	Status int 		`default:"0" json:"status"`
+	Updated_at string	`json:"updated_at"`
+	Updated_by int  `default:"0" json:"updated_by"`
 }
-
 
 type HandleRequestError struct {
 	Status bool   `json:"status"`
@@ -62,4 +61,14 @@ type NoDataResponse struct {
 	Status bool   `json:"status" example:"true" extensions:"x-order=0"`
 	Code   int    `json:"code" extensions:"x-order=1"`
 	Data   NoData `json:"data" extensions:"x-order=1"`
+}
+
+type Beer struct {
+	ID        int      `json:"id"` 
+	Name      string   `json:"name"` 
+	Type      string  `json:"type"`  
+	Picture   string  `json:"picture"`  
+	Detail    string  `json:"detail"`  
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }

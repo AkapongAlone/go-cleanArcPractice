@@ -34,6 +34,8 @@ func SetupRouter() *gin.Engine {
 	handle := repositories.NewBeerHandler(db.Db)
 	beerGroup := r.Group("/api/v1")
 	beerGroup.GET("/beer", handle.GetBeer)
+	beerGroup.GET("/beer/:id", handle.GetBeerByID)
+	beerGroup.GET("/image/:id", handle.GetImage)
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	beerGroup.Use(middlewares.LoggingInfoMiddleware())
 		{beerGroup.POST("/beer", handle.PostBeer)

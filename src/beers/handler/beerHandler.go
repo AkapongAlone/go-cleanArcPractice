@@ -2,11 +2,15 @@ package handler
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	_"path/filepath"
 	"strconv"
+
 	"github.com/AkapongAlone/komgrip-test/helper"
 	"github.com/AkapongAlone/komgrip-test/models"
 	"github.com/AkapongAlone/komgrip-test/requests"
+	"github.com/AkapongAlone/komgrip-test/responses"
 	"github.com/AkapongAlone/komgrip-test/src/beers/domains"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
@@ -34,7 +38,7 @@ func (t *BeerHandler) GetBeer(c *gin.Context) {
 	pageParam := c.Query("page")
 
 	if limitParam == ""{
-		limitParam = "10"
+		limitParam = "0"
 	}
 	if pageParam == "" {
 		pageParam ="1"
@@ -64,6 +68,8 @@ func (t *BeerHandler) GetBeer(c *gin.Context) {
 		"data": result,
 	})
 }
+
+
 
 // @summary
 // @description
@@ -97,7 +103,7 @@ func (t *BeerHandler) PostBeer(c *gin.Context) {
 
 		return
 	}
-	fmt.Println(beer)
+	
 
 	err = t.beerUseCase.PostBeer(beer)
 	if err != nil {
@@ -151,16 +157,22 @@ func (t *BeerHandler) UpdateBeer(c *gin.Context) {
 
 		return
 	}
-	err = t.beerUseCase.UpdateBeer(id, beer)
+	err = t.beerUseCase.UpdateBeer(id, &beer)
+	fmt.Println("beer",beer)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	beer.Picture = helper.GetPathImg(beer.Picture)
+	var respond responses.Beer
+	copier.Copy(&respond, beer)
+	respond.Picture = helper.GetPathImg(beer.Picture)
+	
+	respond.CreatedAt = beer.CreatedAt.String()
+	respond.UpdatedAt = beer.UpdatedAt.String()
 	c.JSON(http.StatusOK, gin.H{
-		"data": beer,
+		"data": respond,
 	})
 }
 
@@ -189,4 +201,70 @@ func (t *BeerHandler) DeleteBeer(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"data": "Deleted",
 	})
+}
+
+// @summary
+// @description
+// @tags beer
+// @Param ID query string true "Insert ID"
+// @response 200 {object} responses.Beer 
+// @router /api/v1/beer [get]
+func (t *BeerHandler) GetBeerByID(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+	result, err := t.beerUseCase.GetBeerById(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	var respond responses.Beer
+	copier.Copy(&respond, result)
+	respond.Picture = helper.GetPathImg(result.Picture)
+	respond.CreatedAt = result.CreatedAt.String()
+	respond.UpdatedAt = result.UpdatedAt.String()
+	c.JSON(http.StatusOK, gin.H{
+		"data": respond,
+	})
+}
+
+// @summary
+// @description
+// @tags beer
+// @Param ID query string true "Insert ID"
+// @response 200 {object} responses.Beer 
+// @router /api/v1/image [get]
+func(t *BeerHandler) GetImage(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+	filePath,err:=t.beerUseCase.GetImg(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+	filePath = "./images/"+filePath
+	fmt.Println(filePath)
+	imageData, err := ioutil.ReadFile(filePath)
+        if err != nil {
+            c.AbortWithError(http.StatusInternalServerError, err)
+            return
+        }
+	contentType := http.DetectContentType(imageData)
+    c.Header("Content-Type", contentType)
+
+        // Return the image data as response
+    c.Data(http.StatusOK, contentType, imageData)
+	
 }
