@@ -6,6 +6,7 @@ import (
 	db "github.com/AkapongAlone/komgrip-test/database"
 	_ "github.com/AkapongAlone/komgrip-test/src/beers/handler"
 	"github.com/AkapongAlone/komgrip-test/src/beers/repositories"
+	auth "github.com/AkapongAlone/komgrip-test/src/auth/repositories"
 	"github.com/gin-gonic/gin"
 	"github.com/AkapongAlone/komgrip-test/middlewares"
 	swaggerFiles "github.com/swaggo/files"
@@ -32,6 +33,9 @@ func SetupRouter() *gin.Engine {
 	// add swagger
 	
 	handle := repositories.NewBeerHandler(db.Db)
+	authHandle := auth.NewAuthHandler(db.Db)
+	r.POST("/register",authHandle.Register)
+	r.GET("/login",authHandle.Login)
 	beerGroup := r.Group("/api/v1")
 	beerGroup.GET("/beer", handle.GetBeer)
 	beerGroup.GET("/beer/:id", handle.GetBeerByID)

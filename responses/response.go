@@ -72,3 +72,8 @@ type Beer struct {
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 }
+
+type LoginResponse struct {
+	AccessToken string `json:"token"` 
+	RefreshToken string `json:"refresh_token"` 
+}

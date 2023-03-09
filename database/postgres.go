@@ -67,6 +67,6 @@ func InitDB() {
 	}
 	
 	Db.AutoMigrate(&models.BeerDB{})
-
+	Db.AutoMigrate(&models.User{})
 	fmt.Println("Db connect")
 }
