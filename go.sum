@@ -145,6 +145,7 @@ github.com/swaggo/swag v1.8.10 h1:eExW4bFa52WOjqRzRD58bgWsWfdFJso50lpbeTcmTfo=
 github.com/swaggo/swag v1.8.10/go.mod h1:ezQVUUhly8dludpVk+/PuwJWvLLanB13ygV5Pr9enSk=
 github.com/swaggo/swag/example/celler v0.0.0-20230223081856-9faf8b34e57e h1:Apr8rcFhn+5zlrieuWQHwh/GJMqguVfBC9OvixkzWXc=
 github.com/swaggo/swag/example/celler v0.0.0-20230223081856-9faf8b34e57e/go.mod h1:iO+GTEUmwjHwUYlxi2MUezDM806SVu64KK474K6i9NA=
+github.com/tidwall/pretty v1.0.0 h1:HsD+QiTn7sK6flMKIvNmpqz1qrpP3Ps6jOKIKMooyg4=
 github.com/tidwall/pretty v1.0.0/go.mod h1:XNkn88O1ChpSDQmQeStsy+sBenx6DDtFZJxhVysOjyk=
 github.com/ugorji/go v1.2.7/go.mod h1:nF9osbDWLy6bDVv/Rtoh6QgnvNDpmCalQV5urGCCS6M=
 github.com/ugorji/go/codec v1.2.7/go.mod h1:WGN1fab3R1fzQlVQTkfxVtIBhWDRqOviHU95kRgeqEY=

@@ -47,13 +47,12 @@ func (t *authUseCase) Login(username string, password string) (string, string, e
 	err = t.authRepo.FindUser(&member, username)
 	err = bcrypt.CompareHashAndPassword([]byte(member.Password), []byte(password))
 	if err == nil {
-
-		accessToken, err := t.CreateToken(int64(member.ID), time.Now().Add(15*time.Minute), "access")
+		accessToken, err := t.CreateToken(int64(member.ID), time.Now().Add(15*time.Hour), "access")
 		fmt.Println("access", accessToken)
 		if err != nil {
 			return "", "", err
 		}
-		refreshToken, err := t.CreateToken(int64(member.ID), time.Now().Add(60*time.Minute), "refresh")
+		refreshToken, err := t.CreateToken(int64(member.ID), time.Now().Add(24*time.Hour), "refresh")
 		fmt.Println("refresh", refreshToken)
 		if err != nil {
 			return "", "", err
@@ -84,3 +83,38 @@ func (t *authUseCase) CreateToken(userID int64, expiration time.Time, typeToken 
 
 	return tokenString, nil
 }
+
+func (t *authUseCase)RefreshToken(tokenString string) (string, string, error){
+    // validate the token
+	sign := os.Getenv("SECRET")
+    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+            return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+        }
+        return []byte(sign), nil
+    })
+    if err != nil {
+        return "","",err
+    }
+
+    // generate a new token with a new expiration time
+    claims := token.Claims.(jwt.MapClaims)
+	fmt.Println("tokwnnn",claims["type"].(string))
+	if claims["type"].(string) != "refresh" {
+		return "","",errors.New("Invalid token type")
+	}
+    ID := claims["userID"].(float64)
+    userID := int64(ID)
+	accessToken, err := t.CreateToken((userID), time.Now().Add(15*time.Hour), "access")
+		fmt.Println("access", accessToken)
+		if err != nil {
+			return "", "", err
+		}
+	refreshToken, err := t.CreateToken((userID), time.Now().Add(24*time.Hour), "refresh")
+	fmt.Println("refresh", refreshToken)
+	if err != nil {
+			return "", "", err
+		}
+	return accessToken, refreshToken, nil
+}
+

@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	 "fmt"
+	_ "fmt"
 	"net/http"
+	"strings"
 
 	"github.com/AkapongAlone/komgrip-test/models"
 	"github.com/AkapongAlone/komgrip-test/requests"
@@ -53,7 +54,6 @@ func (t *AuthHandler) Login(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println("get reqqq",login)
 	accessToken, refreshToken, err := t.authUseCase.Login(login.Name, login.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -61,12 +61,35 @@ func (t *AuthHandler) Login(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println("respond",accessToken,refreshToken)
 	var loginResponse responses.LoginResponse
 	loginResponse.AccessToken = accessToken
 	loginResponse.RefreshToken = refreshToken
-	fmt.Println("respond",loginResponse)
 	c.JSON(http.StatusOK, gin.H{
 		"token": loginResponse,
+	})
+}
+
+func (t *AuthHandler) RefreshToken(c *gin.Context) {
+	var tokenString string
+	if auth := c.Request.Header.Get("Authorization"); auth != "" {
+			tokenString = strings.TrimPrefix(auth, "Bearer ")
+	} else {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+
+	}
+	
+	accessToken, refreshToken, err := t.authUseCase.RefreshToken(tokenString)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	var loginResponse responses.LoginResponse
+	loginResponse.AccessToken = accessToken
+	loginResponse.RefreshToken = refreshToken
+	c.JSON(http.StatusOK, gin.H{
+		"new_token": loginResponse,
 	})
 }

@@ -2,13 +2,15 @@ package routes
 
 import (
 	"net/http"
-	 _"github.com/AkapongAlone/komgrip-test/docs"
+	"os"
+
 	db "github.com/AkapongAlone/komgrip-test/database"
+	_ "github.com/AkapongAlone/komgrip-test/docs"
+	"github.com/AkapongAlone/komgrip-test/middlewares"
+	auth "github.com/AkapongAlone/komgrip-test/src/auth/repositories"
 	_ "github.com/AkapongAlone/komgrip-test/src/beers/handler"
 	"github.com/AkapongAlone/komgrip-test/src/beers/repositories"
-	auth "github.com/AkapongAlone/komgrip-test/src/auth/repositories"
 	"github.com/gin-gonic/gin"
-	"github.com/AkapongAlone/komgrip-test/middlewares"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -36,16 +38,21 @@ func SetupRouter() *gin.Engine {
 	authHandle := auth.NewAuthHandler(db.Db)
 	r.POST("/register",authHandle.Register)
 	r.GET("/login",authHandle.Login)
-	beerGroup := r.Group("/api/v1")
-	beerGroup.GET("/beer", handle.GetBeer)
-	beerGroup.GET("/beer/:id", handle.GetBeerByID)
-	beerGroup.GET("/image/:id", handle.GetImage)
-	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	beerGroup.Use(middlewares.LoggingInfoMiddleware())
+	r.GET("/re_token",authHandle.RefreshToken)
+	protected := r.Group("/auth", middlewares.Protect([]byte(os.Getenv("SECRET")))) 
+	{
+		beerGroup := protected.Group("/api/v1")
+		beerGroup.GET("/beer", handle.GetBeer)
+		beerGroup.GET("/beer/:id", handle.GetBeerByID)
+		beerGroup.GET("/image/:id", handle.GetImage)
+		r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		beerGroup.Use(middlewares.LoggingInfoMiddleware())
 		{beerGroup.POST("/beer", handle.PostBeer)
 		beerGroup.PUT("/beer/:id", handle.UpdateBeer)
 		beerGroup.DELETE("/beer/:id", handle.DeleteBeer)
 		}
+	}
+	
 	r.StaticFS("/file/", http.Dir("images"))
 	return r
 }
